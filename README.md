@@ -1,6 +1,6 @@
 # suissetec_recipes
 
-Private Symfony Flex recipe repository for `suissetec/sso-auth-bundle`.
+Public Symfony Flex recipe repository for `suissetec/sso-auth-bundle`.
 
 ## Repository layout
 
@@ -13,7 +13,7 @@ Private Symfony Flex recipe repository for `suissetec/sso-auth-bundle`.
 
 Use:
 
-- `https://raw.githubusercontent.com/artack/suissetec_recipes/main/index.json`
+- `https://api.github.com/repos/artack/suissetec_recipes/contents/index.json?ref=main`
 
 ## Consumer setup
 
@@ -24,7 +24,7 @@ In consuming app `composer.json`:
   "extra": {
     "symfony": {
       "endpoint": [
-        "https://raw.githubusercontent.com/artack/suissetec_recipes/main/index.json",
+        "https://api.github.com/repos/artack/suissetec_recipes/contents/index.json?ref=main",
         "flex://defaults"
       ]
     }
@@ -40,5 +40,5 @@ docker compose exec php composer require suissetec/sso-auth-bundle:^0.1
 
 ## Notes
 
-- Recipe auto-creates `config/packages/suissetec_sso_auth.yaml` and `config/routes/suissetec_sso_auth.yaml`.
+- Recipe auto-creates env config, `config/packages/suissetec_sso_auth.yaml` and `config/routes/suissetec_sso_auth.yaml`.
 - `security.yaml` firewall wiring for the authenticator is still manual.
