@@ -1,0 +1,15 @@
+suissetec_sso_auth:
+    sso_server:
+        url: '%env(SSO_URL)%'
+        app_id: '%env(SSO_APP_ID)%'
+        api_bearer_token: '%env(default::SSO_API_BEARER_TOKEN)%'
+        # Alternative auth instead of bearer token:
+        # api_username: '%env(default::SSO_API_USERNAME)%'
+        # api_password: '%env(default::SSO_API_PASSWORD)%'
+
+    authenticator:
+        login_path: '/sso/login'
+        check_path: '/sso/callback'
+        default_target_path: '/'
+        failure_path: '/'
+        silent_login_routes: []

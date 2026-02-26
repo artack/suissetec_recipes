@@ -1,0 +1,12 @@
+{
+  "recipes": {
+    "suissetec/sso-auth-bundle": ["0.1"]
+  },
+  "branch": "main",
+  "is_contrib": true,
+  "_links": {
+    "repository": "https://github.com/artack/suissetec_recipes",
+    "origin_template": "https://github.com/artack/suissetec_recipes/tree/main/{package}/{version}",
+    "recipe_template": "https://raw.githubusercontent.com/artack/suissetec_recipes/main/{package_dotted}.{version}.json"
+  }
+}

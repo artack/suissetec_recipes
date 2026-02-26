@@ -1,0 +1,24 @@
+{
+  "bundles": {
+    "Suissetec\\SsoAuthBundle\\SuissetecSsoAuthBundle": ["all"]
+  },
+  "copy-from-recipe": {
+    "config/": "%CONFIG_DIR%/"
+  },
+  "env": {
+    "SSO_URL": "https://sso.example.test",
+    "SSO_APP_ID": "change-me",
+    "SSO_API_BEARER_TOKEN": "change-me",
+    "SSO_API_USERNAME": "",
+    "SSO_API_PASSWORD": ""
+  },
+  "aliases": [
+    "suissetec-sso-auth-bundle",
+    "sso-auth"
+  ],
+  "post-install-output": [
+    "Add Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator to your firewall custom_authenticators in config/packages/security.yaml.",
+    "Set entry_point to Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator.",
+    "Adjust suissetec_sso_auth.authenticator.silent_login_routes for routes that should use dialog=0."
+  ]
+}

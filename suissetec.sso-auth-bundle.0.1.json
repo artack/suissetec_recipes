@@ -1,0 +1,41 @@
+{
+  "manifests": {
+    "suissetec/sso-auth-bundle": {
+      "manifest": {
+        "bundles": {
+          "Suissetec\\SsoAuthBundle\\SuissetecSsoAuthBundle": ["all"]
+        },
+        "copy-from-recipe": {
+          "config/": "%CONFIG_DIR%/"
+        },
+        "env": {
+          "SSO_URL": "https://testapp.suissetec.ch",
+          "SSO_APP_ID": "change-me",
+          "SSO_API_USERNAME": "change-me",
+          "SSO_API_PASSWORD": "change-me",
+          "SSO_API_BEARER_TOKEN": ""
+        },
+        "aliases": [
+          "suissetec-sso-auth-bundle",
+          "sso-auth"
+        ],
+        "post-install-output": [
+          "Add Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator to your firewall custom_authenticators in config/packages/security.yaml.",
+          "Set entry_point to Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator.",
+          "Adjust suissetec_sso_auth.authenticator.silent_login_routes for routes that should use dialog=0."
+        ]
+      },
+      "files": {
+        "config/packages/suissetec_sso_auth.yaml": {
+          "contents": "suissetec_sso_auth:\n    sso_server:\n        url: '%env(SSO_URL)%'\n        app_id: '%env(SSO_APP_ID)%'\n        api_bearer_token: '%env(default::SSO_API_BEARER_TOKEN)%'\n        # Alternative auth instead of bearer token:\n        # api_username: '%env(default::SSO_API_USERNAME)%'\n        # api_password: '%env(default::SSO_API_PASSWORD)%'\n\n    authenticator:\n        login_path: '/sso/login'\n        check_path: '/sso/callback'\n        default_target_path: '/'\n        failure_path: '/'\n        silent_login_routes: []\n",
+          "executable": false
+        },
+        "config/routes/suissetec_sso_auth.yaml": {
+          "contents": "suissetec_sso_auth:\n    resource: '@SuissetecSsoAuthBundle/config/routes.yaml'\n",
+          "executable": false
+        }
+      },
+      "ref": "main"
+    }
+  }
+}
