@@ -1,6 +1,6 @@
 {
-  "aliases": {
-    "sso-auth": "suissetec/sso-auth-bundle",
-    "suissetec-sso-auth-bundle": "suissetec/sso-auth-bundle"
-  }
+    "aliases": {
+        "sso-auth": "suissetec/sso-auth-bundle",
+        "suissetec-sso-auth-bundle": "suissetec/sso-auth-bundle"
+    }
 }

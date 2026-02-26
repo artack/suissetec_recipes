@@ -1,23 +1,12 @@
 # suissetec_recipes
 
-Public Symfony Flex recipe repository for `suissetec/sso-auth-bundle`.
+Symfony Flex private recipe repository.
 
-## Repository layout
+## Endpoint
 
-- `index.json`: Flex endpoint index
-- `aliases.json`: optional package aliases
-- `suissetec.sso-auth-bundle.0.1.json`: compiled recipe artifact served by `recipe_template`
-- `suissetec/sso-auth-bundle/0.1/`: source recipe (manifest + copied config files)
-
-## Endpoint URL
-
-Use:
+Use this endpoint in consumer `composer.json`:
 
 - `https://api.github.com/repos/artack/suissetec_recipes/contents/index.json?ref=main`
-
-## Consumer setup
-
-In consuming app `composer.json`:
 
 ```json
 {
@@ -32,13 +21,51 @@ In consuming app `composer.json`:
 }
 ```
 
-Then install with Docker Composer:
+## Source layout
+
+Recipes are authored as source files in:
+
+- `src/vendor/package/version/manifest.json`
+- `src/vendor/package/version/config/...` (or any other files copied by the recipe)
+
+Example:
+
+- `src/suissetec/sso-auth-bundle/0.1/manifest.json`
+
+## Compile step
+
+Yes, a compile step is required.
+
+Run:
 
 ```bash
-docker compose exec php composer require suissetec/sso-auth-bundle:^0.1
+./compile-recipes.sh
 ```
 
-## Notes
+What it does:
 
-- Recipe auto-creates env config, `config/packages/suissetec_sso_auth.yaml` and `config/routes/suissetec_sso_auth.yaml`.
-- `security.yaml` firewall wiring for the authenticator is still manual.
+1. Scans all `src/vendor/package/version` directories containing `manifest.json`.
+2. Writes compiled artifacts to `build/vendor.package.version.json`.
+3. Base64-encodes file payloads for Flex (`files.*.contents`).
+4. Rebuilds `index.json` `recipes` map from discovered source recipes.
+5. Regenerates `aliases.json` with one deterministic alias per package (`vendor-package`) and preserves valid existing custom aliases.
+6. Keeps `index.json` at repo root and sets `_links.recipe_template` to GitHub API `contents/build/{package_dotted}.{version}.json?ref=main`.
+
+This works for any number of vendors, packages and versions added to this repo.
+
+## Publish workflow
+
+1. Edit source recipe files.
+2. Run `./compile-recipes.sh`.
+3. Commit source changes plus generated `build/*.json` artifacts and `index.json`.
+4. Push to `main`.
+
+## If consumer files were corrupted previously
+
+If an older compiled artifact had non-Base64 file payloads, recover in consumer project:
+
+```bash
+rm config/packages/suissetec_sso_auth.yaml config/routes/suissetec_sso_auth.yaml
+composer clear-cache
+composer recipes:install suissetec/sso-auth-bundle --force -v
+```

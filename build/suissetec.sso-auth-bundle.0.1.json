@@ -1,0 +1,43 @@
+{
+    "manifests": {
+        "suissetec/sso-auth-bundle": {
+            "manifest": {
+                "bundles": {
+                    "Suissetec\\SsoAuthBundle\\SuissetecSsoAuthBundle": [
+                        "all"
+                    ]
+                },
+                "copy-from-recipe": {
+                    "config/": "%CONFIG_DIR%/"
+                },
+                "env": {
+                    "SSO_URL": "https://sso.example.test",
+                    "SSO_APP_ID": "change-me",
+                    "SSO_API_BEARER_TOKEN": "change-me",
+                    "SSO_API_USERNAME": "",
+                    "SSO_API_PASSWORD": ""
+                },
+                "aliases": [
+                    "suissetec-sso-auth-bundle",
+                    "sso-auth"
+                ],
+                "post-install-output": [
+                    "Add Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator to your firewall custom_authenticators in config/packages/security.yaml.",
+                    "Set entry_point to Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator.",
+                    "Adjust suissetec_sso_auth.authenticator.silent_login_routes for routes that should use dialog=0."
+                ]
+            },
+            "files": {
+                "config/packages/suissetec_sso_auth.yaml": {
+                    "contents": "c3Vpc3NldGVjX3Nzb19hdXRoOgogICAgc3NvX3NlcnZlcjoKICAgICAgICB1cmw6ICclZW52KFNTT19VUkwpJScKICAgICAgICBhcHBfaWQ6ICclZW52KFNTT19BUFBfSUQpJScKICAgICAgICBhcGlfYmVhcmVyX3Rva2VuOiAnJWVudihkZWZhdWx0OjpTU09fQVBJX0JFQVJFUl9UT0tFTiklJwogICAgICAgICMgQWx0ZXJuYXRpdmUgYXV0aCBpbnN0ZWFkIG9mIGJlYXJlciB0b2tlbjoKICAgICAgICAjIGFwaV91c2VybmFtZTogJyVlbnYoZGVmYXVsdDo6U1NPX0FQSV9VU0VSTkFNRSklJwogICAgICAgICMgYXBpX3Bhc3N3b3JkOiAnJWVudihkZWZhdWx0OjpTU09fQVBJX1BBU1NXT1JEKSUnCgogICAgYXV0aGVudGljYXRvcjoKICAgICAgICBsb2dpbl9wYXRoOiAnL3Nzby9sb2dpbicKICAgICAgICBjaGVja19wYXRoOiAnL3Nzby9jYWxsYmFjaycKICAgICAgICBkZWZhdWx0X3RhcmdldF9wYXRoOiAnLycKICAgICAgICBmYWlsdXJlX3BhdGg6ICcvJwogICAgICAgIHNpbGVudF9sb2dpbl9yb3V0ZXM6IFtdCg==",
+                    "executable": false
+                },
+                "config/routes/suissetec_sso_auth.yaml": {
+                    "contents": "c3Vpc3NldGVjX3Nzb19hdXRoOgogICAgcmVzb3VyY2U6ICdAU3Vpc3NldGVjU3NvQXV0aEJ1bmRsZS9jb25maWcvcm91dGVzLnlhbWwnCg==",
+                    "executable": false
+                }
+            },
+            "ref": "main"
+        }
+    }
+}
