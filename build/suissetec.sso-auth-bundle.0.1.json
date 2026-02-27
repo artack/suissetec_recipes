@@ -11,11 +11,11 @@
                     "config/": "%CONFIG_DIR%/"
                 },
                 "env": {
-                    "SSO_URL": "https://sso.example.test",
-                    "SSO_APP_ID": "change-me",
-                    "SSO_API_BEARER_TOKEN": "change-me",
-                    "SSO_API_USERNAME": "",
-                    "SSO_API_PASSWORD": ""
+                    "SUISSETEC_SSO_URL": "https://testapp.suissetec.ch",
+                    "SUISSETEC_SSO_APP_ID": "change-me",
+                    "SUISSETEC_SSO_API_USERNAME": "change-me",
+                    "SUISSETEC_SSO_API_PASSWORD": "change-me",
+                    "# SUISSETEC_SSO_API_BEARER_TOKEN": ""
                 },
                 "aliases": [
                     "suissetec-sso-auth-bundle",
@@ -29,7 +29,7 @@
             },
             "files": {
                 "config/packages/suissetec_sso_auth.yaml": {
-                    "contents": "c3Vpc3NldGVjX3Nzb19hdXRoOgogICAgc3NvX3NlcnZlcjoKICAgICAgICB1cmw6ICclZW52KFNTT19VUkwpJScKICAgICAgICBhcHBfaWQ6ICclZW52KFNTT19BUFBfSUQpJScKICAgICAgICBhcGlfYmVhcmVyX3Rva2VuOiAnJWVudihkZWZhdWx0OjpTU09fQVBJX0JFQVJFUl9UT0tFTiklJwogICAgICAgICMgQWx0ZXJuYXRpdmUgYXV0aCBpbnN0ZWFkIG9mIGJlYXJlciB0b2tlbjoKICAgICAgICAjIGFwaV91c2VybmFtZTogJyVlbnYoZGVmYXVsdDo6U1NPX0FQSV9VU0VSTkFNRSklJwogICAgICAgICMgYXBpX3Bhc3N3b3JkOiAnJWVudihkZWZhdWx0OjpTU09fQVBJX1BBU1NXT1JEKSUnCgogICAgYXV0aGVudGljYXRvcjoKICAgICAgICBsb2dpbl9wYXRoOiAnL3Nzby9sb2dpbicKICAgICAgICBjaGVja19wYXRoOiAnL3Nzby9jYWxsYmFjaycKICAgICAgICBkZWZhdWx0X3RhcmdldF9wYXRoOiAnLycKICAgICAgICBmYWlsdXJlX3BhdGg6ICcvJwogICAgICAgIHNpbGVudF9sb2dpbl9yb3V0ZXM6IFtdCg==",
+                    "contents": "c3Vpc3NldGVjX3Nzb19hdXRoOgogICAgc3NvX3NlcnZlcjoKICAgICAgICB1cmw6ICclZW52KFNVSVNTRVRFQ19TU09fVVJMKSUnCiAgICAgICAgYXBwX2lkOiAnJWVudihTVUlTU0VURUNfU1NPX0FQUF9JRCklJwogICAgICAgIGFwaV91c2VybmFtZTogJyVlbnYoZGVmYXVsdDo6U1VJU1NFVEVDX1NTT19BUElfVVNFUk5BTUUpJScKICAgICAgICBhcGlfcGFzc3dvcmQ6ICclZW52KGRlZmF1bHQ6OlNVSVNTRVRFQ19TU09fQVBJX1BBU1NXT1JEKSUnCiAgICAgICAgIyBBbHRlcm5hdGl2ZSBhdXRoIGluc3RlYWQgb2YgdXNlcm5hbWUgYW5kIHBhc3N3b3JkOgogICAgICAgICMgYXBpX2JlYXJlcl90b2tlbjogJyVlbnYoZGVmYXVsdDo6U1VJU1NFVEVDX1NTT19BUElfQkVBUkVSX1RPS0VOKSUnCgogICAgYXV0aGVudGljYXRvcjoKICAgICAgICBsb2dpbl9wYXRoOiAnL3Nzby9sb2dpbicKICAgICAgICBjaGVja19wYXRoOiAnL3Nzby9jYWxsYmFjaycKICAgICAgICBkZWZhdWx0X3RhcmdldF9wYXRoOiAnLycKICAgICAgICBmYWlsdXJlX3BhdGg6ICcvJwogICAgICAgIHNpbGVudF9sb2dpbl9yb3V0ZXM6IFtdCg==",
                     "executable": false
                 },
                 "config/routes/suissetec_sso_auth.yaml": {

@@ -1,11 +1,11 @@
 suissetec_sso_auth:
     sso_server:
-        url: '%env(SSO_URL)%'
-        app_id: '%env(SSO_APP_ID)%'
-        api_bearer_token: '%env(default::SSO_API_BEARER_TOKEN)%'
-        # Alternative auth instead of bearer token:
-        # api_username: '%env(default::SSO_API_USERNAME)%'
-        # api_password: '%env(default::SSO_API_PASSWORD)%'
+        url: '%env(SUISSETEC_SSO_URL)%'
+        app_id: '%env(SUISSETEC_SSO_APP_ID)%'
+        api_username: '%env(default::SUISSETEC_SSO_API_USERNAME)%'
+        api_password: '%env(default::SUISSETEC_SSO_API_PASSWORD)%'
+        # Alternative auth instead of username and password:
+        # api_bearer_token: '%env(default::SUISSETEC_SSO_API_BEARER_TOKEN)%'
 
     authenticator:
         login_path: '/sso/login'
