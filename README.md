@@ -1,6 +1,6 @@
 # suissetec_recipes
 
-Symfony Flex private recipe repository.
+Symfony Flex **PUBLIC** recipe repository.
 
 ## Endpoint
 
