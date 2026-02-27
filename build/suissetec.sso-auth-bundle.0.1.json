@@ -11,11 +11,13 @@
                     "config/": "%CONFIG_DIR%/"
                 },
                 "env": {
+                    "#1": "You can use either username and password (default), or API bearer token",
+                    "#2": "",
+                    "#3": "SUISSETEC_SSO_API_BEARER_TOKEN=\"change-me\"",
                     "SUISSETEC_SSO_URL": "https://testapp.suissetec.ch",
                     "SUISSETEC_SSO_APP_ID": "change-me",
                     "SUISSETEC_SSO_API_USERNAME": "change-me",
-                    "SUISSETEC_SSO_API_PASSWORD": "change-me",
-                    "# SUISSETEC_SSO_API_BEARER_TOKEN": ""
+                    "SUISSETEC_SSO_API_PASSWORD": "change-me"
                 },
                 "aliases": [
                     "suissetec-sso-auth-bundle",
