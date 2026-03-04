@@ -8,6 +8,9 @@ suissetec_sso_auth:
         # Alternative auth instead of username and password:
         # api_bearer_token: '%env(default::SUISSETEC_SSO_API_BEARER_TOKEN)%'
 
+        # TTL of session refresh requests to the IdP for reducing the load on the IdP, defaults to 60 seconds
+        # session_refresh_ttl: 60
+
     authenticator:
         login_path: '/sso/login'
         check_path: '/sso/callback'
