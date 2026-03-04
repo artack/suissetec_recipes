@@ -4,6 +4,7 @@ suissetec_sso_auth:
         app_id: '%env(SUISSETEC_SSO_APP_ID)%'
         api_username: '%env(default::SUISSETEC_SSO_API_USERNAME)%'
         api_password: '%env(default::SUISSETEC_SSO_API_PASSWORD)%'
+
         # Alternative auth instead of username and password:
         # api_bearer_token: '%env(default::SUISSETEC_SSO_API_BEARER_TOKEN)%'
 
@@ -12,4 +13,17 @@ suissetec_sso_auth:
         check_path: '/sso/callback'
         default_target_path: '/'
         failure_path: '/'
-        silent_login_routes: []
+
+        # Check for existing sso user session on public routes (f.e. /^\/(de|fr|it)$/)
+        # silent_login_routes:
+        #     - /^\/[a-z]{2}\/landingpage$/
+
+    roles:
+        # Define default roles appended for any logged-in user, can be empty
+        default:
+            - ROLE_USER
+
+        # Map interCMS userFunctions to symfony security roles
+        # function_mapping:
+        #     - appYourAppName: ROLE_USER
+        #     - appYourAppNameAdmin: ROLE_ADMIN
