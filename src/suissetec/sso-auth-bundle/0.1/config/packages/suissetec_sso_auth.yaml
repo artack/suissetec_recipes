@@ -11,6 +11,9 @@ suissetec_sso_auth:
         # TTL of session refresh requests to the IdP for reducing the load on the IdP, defaults to 60 seconds
         # session_refresh_ttl: 60
 
+        # Whether to send a logout request to IdP when a user logs out from this application. default: true
+        # logout_on_idp: false
+
     authenticator:
         login_path: '/sso/login'
         check_path: '/sso/callback'
