@@ -191,7 +191,8 @@ $index = [
     'is_contrib' => $existingIndex['is_contrib'] ?? true,
     '_links' => (function () use ($existingIndex): array {
         $links = is_array($existingIndex['_links'] ?? null) ? $existingIndex['_links'] : [];
-        $links['repository'] ??= 'https://github.com/artack/suissetec_recipes';
+        // Flex expects a host/path value here and may prepend the scheme itself.
+        $links['repository'] = 'github.com/artack/suissetec_recipes';
         $links['origin_template'] = 'https://github.com/artack/suissetec_recipes/tree/main/src/{package}/{version}';
         $links['recipe_template'] = 'https://api.github.com/repos/artack/suissetec_recipes/contents/build/{package_dotted}.{version}.json?ref=main';
         return $links;

@@ -8,7 +8,7 @@
     "branch": "main",
     "is_contrib": true,
     "_links": {
-        "repository": "https://github.com/artack/suissetec_recipes",
+        "repository": "github.com/artack/suissetec_recipes",
         "origin_template": "https://github.com/artack/suissetec_recipes/tree/main/src/{package}/{version}",
         "recipe_template": "https://api.github.com/repos/artack/suissetec_recipes/contents/build/{package_dotted}.{version}.json?ref=main"
     }
