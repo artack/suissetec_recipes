@@ -1,8 +1,7 @@
 {
     "recipes": {
         "suissetec/sso-auth-bundle": [
-            "0.1",
-            "0.2"
+            "1.0"
         ]
     },
     "branch": "main",

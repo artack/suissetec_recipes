@@ -1,2 +1,0 @@
-suissetec_sso_auth:
-    resource: '@SuissetecSsoAuthBundle/config/routes.yaml'
