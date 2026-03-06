@@ -148,7 +148,11 @@ if ($compiledCount === 0) {
 
 ksort($recipesByPackage, SORT_STRING);
 foreach ($recipesByPackage as &$versions) {
-    sort($versions, SORT_STRING);
+    // Flex should see the newest recipe first.
+    usort($versions, static function (string $a, string $b): int {
+        $cmp = version_compare($b, $a);
+        return $cmp !== 0 ? $cmp : strcmp($b, $a);
+    });
 }
 unset($versions);
 
