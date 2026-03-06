@@ -9,7 +9,7 @@
     "is_contrib": true,
     "_links": {
         "repository": "github.com/artack/suissetec_recipes",
-        "origin_template": "https://github.com/artack/suissetec_recipes/tree/main/src/{package}/{version}",
+        "origin_template": "{package}:{version}@github.com/artack/suissetec_recipes:main",
         "recipe_template": "https://api.github.com/repos/artack/suissetec_recipes/contents/build/{package_dotted}.{version}.json?ref=main"
     }
 }

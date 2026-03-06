@@ -21,24 +21,24 @@ if ($root === false) {
 }
 
 /**
- * Resolve an immutable git ref for a specific recipe directory.
- * This stays stable unless files under that directory change.
+ * Build a deterministic 40-char recipe ref from manifest + files.
+ * This changes only when recipe content changes.
  */
-function resolveRecipeRef(string $root, string $recipeDir, string $fallback): string
+function buildRecipeRef(string $package, string $version, array $manifest, array $files): string
 {
-    $relative = ltrim(str_replace($root, '', $recipeDir), '/');
-    if ($relative === '') {
-        return $fallback;
+    $payload = [
+        'package' => $package,
+        'version' => $version,
+        'manifest' => $manifest,
+        'files' => $files,
+    ];
+
+    $json = json_encode($payload, JSON_UNESCAPED_SLASHES);
+    if (!is_string($json)) {
+        throw new RuntimeException('Unable to encode recipe payload for ref generation.');
     }
 
-    $command = 'git -C ' . escapeshellarg($root) . ' log -1 --format=%H -- ' . escapeshellarg($relative) . ' 2>/dev/null';
-    $output = shell_exec($command);
-    if (!is_string($output)) {
-        return $fallback;
-    }
-
-    $ref = trim($output);
-    return $ref !== '' ? $ref : $fallback;
+    return sha1($json);
 }
 
 $indexPath = $root . '/index.json';
@@ -52,11 +52,8 @@ if (is_file($indexPath)) {
         $existingIndex = $decoded;
     }
 }
-$defaultRefOutput = shell_exec('git -C ' . escapeshellarg($root) . ' rev-parse HEAD 2>/dev/null');
-$defaultRef = is_string($defaultRefOutput) ? trim($defaultRefOutput) : '';
-if ($defaultRef === '') {
-    $defaultRef = 'main';
-}
+
+$branch = $existingIndex['branch'] ?? 'main';
 
 $recipesByPackage = [];
 $compiledCount = 0;
@@ -147,7 +144,7 @@ foreach ($vendorDirs as $vendorDir) {
                     $fullPackage => [
                         'manifest' => $manifest,
                         'files' => $files,
-                        'ref' => resolveRecipeRef($root, $versionDir, $defaultRef),
+                        'ref' => buildRecipeRef($fullPackage, $version, $manifest, $files),
                     ],
                 ],
             ];
@@ -217,14 +214,17 @@ file_put_contents(
 
 $index = [
     'recipes' => $recipesByPackage,
-    'branch' => $existingIndex['branch'] ?? 'main',
+    'branch' => $branch,
     'is_contrib' => $existingIndex['is_contrib'] ?? true,
-    '_links' => (function () use ($existingIndex): array {
+    '_links' => (function () use ($existingIndex, $branch): array {
         $links = is_array($existingIndex['_links'] ?? null) ? $existingIndex['_links'] : [];
         // Flex expects a host/path value here and may prepend the scheme itself.
         $links['repository'] = 'github.com/artack/suissetec_recipes';
-        $links['origin_template'] = 'https://github.com/artack/suissetec_recipes/tree/main/src/{package}/{version}';
-        $links['recipe_template'] = 'https://api.github.com/repos/artack/suissetec_recipes/contents/build/{package_dotted}.{version}.json?ref=main';
+        $links['origin_template'] = sprintf('{package}:{version}@github.com/artack/suissetec_recipes:%s', $branch);
+        $links['recipe_template'] = sprintf(
+            'https://api.github.com/repos/artack/suissetec_recipes/contents/build/{package_dotted}.{version}.json?ref=%s',
+            $branch
+        );
         return $links;
     })(),
 ];
