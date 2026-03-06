@@ -17,6 +17,7 @@ suissetec_sso_auth:
     authenticator:
         login_path: '/sso/login'
         check_path: '/sso/callback'
+        switch_member_path: '/sso/switch-member'
 
         # Back channel logout path, called by IdP as f.e. /sso/logout?userId=x&loginId=y
         backchannel_logout_path: '/sso/logout'
@@ -48,7 +49,11 @@ suissetec_sso_auth:
 
     ui:
         header:
+            # show_switch_member: true # default: false
+            # show_portal_badge: false # default: true
+            # show_login_badge: false # default: true
+            # portal_environment: prod # enum: test, prod ; default: test
             application_titles:
-                # de: NeueWebApp
-                # fr: NouvelleApplicationWeb
-                # it: NuovaApplicazioneWeb
+                de: NeueWebApp
+                fr: NouvelleApplicationWeb
+                it: NuovaApplicazioneWeb
