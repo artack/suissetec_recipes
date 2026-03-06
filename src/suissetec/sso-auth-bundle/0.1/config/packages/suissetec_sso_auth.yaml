@@ -8,9 +8,6 @@ suissetec_sso_auth:
         # Alternative auth instead of username and password:
         # api_bearer_token: '%env(default::SUISSETEC_SSO_API_BEARER_TOKEN)%'
 
-        # TTL of session refresh requests to the IdP for reducing the load on the IdP, defaults to 60 seconds
-        # session_refresh_ttl: 60
-
         # Whether to send a logout request to IdP when a user logs out from this application. default: true
         # logout_on_idp: false
 
@@ -32,10 +29,6 @@ suissetec_sso_auth:
         # silent_login_routes:
         #     - /^\/[a-z]{2}\/landingpage$/
 
-    session_persistence:
-        # Whether to persist the session after a successful login. default: true
-        # enabled: false
-
     roles:
         # Define default roles appended for any logged-in user, can be empty
         default:
@@ -45,10 +38,3 @@ suissetec_sso_auth:
         # function_mapping:
         #     - appYourAppName: ROLE_USER
         #     - appYourAppNameAdmin: ROLE_ADMIN
-
-    ui:
-        header:
-            application_titles:
-                # de: NeueWebApp
-                # fr: NouvelleApplicationWeb
-                # it: NuovaApplicazioneWeb
