@@ -4,7 +4,7 @@
 This repository hosts private Symfony Flex recipes for internal packages.
 
 ## Current Architecture
-- Source recipes live under `src/`.
+- Source recipes live under `<vendor>/<package>/<version>/` at repository root.
 - Compiled recipe artifacts live under `build/`.
 - Flex endpoint index is `index.json` at repository root.
 - Optional package aliases are stored in `aliases.json` at repository root.
@@ -12,12 +12,12 @@ This repository hosts private Symfony Flex recipes for internal packages.
 ## Required Directory Convention
 Create recipes with this structure:
 
-- `src/<vendor>/<package>/<version>/manifest.json`
-- `src/<vendor>/<package>/<version>/<any other files referenced by the recipe>`
+- `<vendor>/<package>/<version>/manifest.json`
+- `<vendor>/<package>/<version>/<any other files referenced by the recipe>`
 
 Example:
 
-- `src/suissetec/sso-auth-bundle/0.1/manifest.json`
+- `suissetec/sso-auth-bundle/0.1/manifest.json`
 
 ## Compile Workflow (Mandatory)
 Do not edit compiled files manually.
@@ -60,7 +60,7 @@ Example:
 - `env` entries are defined in source `manifest.json` and are applied by Flex during install.
 
 ## Publishing Checklist
-1. Edit source recipe files under `src/`.
+1. Edit source recipe files under `<vendor>/<package>/<version>/`.
 2. Run `./compile-recipes.sh`.
 3. Verify generated outputs in `build/`, `index.json`, and `aliases.json`.
 4. Commit source + generated artifacts together.
@@ -76,7 +76,7 @@ composer recipes:install suissetec/sso-auth-bundle --force -v
 ```
 
 ## Agent Guardrails
-- Treat `src/` as source of truth.
+- Treat root recipe directories (`<vendor>/<package>/<version>/`) as source of truth.
 - Avoid manual edits in `build/`.
 - Keep `index.json` at root level.
 - Keep recipe template URLs aligned with `build/{package_dotted}.{version}.json`.

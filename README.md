@@ -25,12 +25,12 @@ Use this endpoint in consumer `composer.json`:
 
 Recipes are authored as source files in:
 
-- `src/vendor/package/version/manifest.json`
-- `src/vendor/package/version/config/...` (or any other files copied by the recipe)
+- `vendor/package/version/manifest.json`
+- `vendor/package/version/config/...` (or any other files copied by the recipe)
 
 Example:
 
-- `src/suissetec/sso-auth-bundle/0.1/manifest.json`
+- `suissetec/sso-auth-bundle/0.1/manifest.json`
 
 ## Compile step
 
@@ -44,7 +44,7 @@ Run:
 
 What it does:
 
-1. Scans all `src/vendor/package/version` directories containing `manifest.json`.
+1. Scans all `vendor/package/version` directories containing `manifest.json`.
 2. Writes compiled artifacts to `build/vendor.package.version.json`.
 3. Base64-encodes file payloads for Flex (`files.*.contents`).
 4. Rebuilds `index.json` `recipes` map from discovered source recipes.

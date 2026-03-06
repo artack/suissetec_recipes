@@ -44,7 +44,6 @@ function buildRecipeRef(string $package, string $version, array $manifest, array
 $indexPath = $root . '/index.json';
 $aliasesPath = $root . '/aliases.json';
 $buildDir = $root . '/build';
-$srcDir = $root . '/src';
 $existingIndex = [];
 if (is_file($indexPath)) {
     $decoded = json_decode((string) file_get_contents($indexPath), true);
@@ -70,7 +69,14 @@ if ($existingBuildArtifacts !== false) {
     }
 }
 
-$vendorDirs = glob($srcDir . '/*', GLOB_ONLYDIR);
+$excludedRootDirs = [
+    '.git' => true,
+    '.github' => true,
+    '.idea' => true,
+    'build' => true,
+];
+
+$vendorDirs = glob($root . '/*', GLOB_ONLYDIR);
 if ($vendorDirs === false) {
     fwrite(STDERR, "Unable to scan repository.\n");
     exit(1);
@@ -80,6 +86,9 @@ sort($vendorDirs, SORT_STRING);
 
 foreach ($vendorDirs as $vendorDir) {
     $vendor = basename($vendorDir);
+    if (isset($excludedRootDirs[$vendor])) {
+        continue;
+    }
 
     $packageDirs = glob($vendorDir . '/*', GLOB_ONLYDIR);
     if ($packageDirs === false) {
@@ -165,7 +174,7 @@ foreach ($vendorDirs as $vendorDir) {
 }
 
 if ($compiledCount === 0) {
-    fwrite(STDERR, "No recipes found. Expected directories like src/vendor/package/version/manifest.json\n");
+    fwrite(STDERR, "No recipes found. Expected directories like vendor/package/version/manifest.json\n");
     exit(1);
 }
 
