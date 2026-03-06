@@ -20,6 +20,27 @@ if ($root === false) {
     exit(1);
 }
 
+/**
+ * Resolve an immutable git ref for a specific recipe directory.
+ * This stays stable unless files under that directory change.
+ */
+function resolveRecipeRef(string $root, string $recipeDir, string $fallback): string
+{
+    $relative = ltrim(str_replace($root, '', $recipeDir), '/');
+    if ($relative === '') {
+        return $fallback;
+    }
+
+    $command = 'git -C ' . escapeshellarg($root) . ' log -1 --format=%H -- ' . escapeshellarg($relative) . ' 2>/dev/null';
+    $output = shell_exec($command);
+    if (!is_string($output)) {
+        return $fallback;
+    }
+
+    $ref = trim($output);
+    return $ref !== '' ? $ref : $fallback;
+}
+
 $indexPath = $root . '/index.json';
 $aliasesPath = $root . '/aliases.json';
 $buildDir = $root . '/build';
@@ -30,6 +51,11 @@ if (is_file($indexPath)) {
     if (is_array($decoded)) {
         $existingIndex = $decoded;
     }
+}
+$defaultRefOutput = shell_exec('git -C ' . escapeshellarg($root) . ' rev-parse HEAD 2>/dev/null');
+$defaultRef = is_string($defaultRefOutput) ? trim($defaultRefOutput) : '';
+if ($defaultRef === '') {
+    $defaultRef = 'main';
 }
 
 $recipesByPackage = [];
@@ -121,7 +147,7 @@ foreach ($vendorDirs as $vendorDir) {
                     $fullPackage => [
                         'manifest' => $manifest,
                         'files' => $files,
-                        'ref' => $existingIndex['branch'] ?? 'main',
+                        'ref' => resolveRecipeRef($root, $versionDir, $defaultRef),
                     ],
                 ],
             ];
