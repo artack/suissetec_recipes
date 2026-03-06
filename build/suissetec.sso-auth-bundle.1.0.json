@@ -22,6 +22,14 @@
                 "aliases": [
                     "suissetec-sso-auth-bundle",
                     "sso-auth"
+                ],
+                "post-install-output": [
+                    " * Configure IdP credentials environment variables.",
+                    " * Check bundle configurations at <info>packages/suissetec-sso-auth.yaml</info>",
+                    " * Configure symfony security:",
+                    "   1. Add Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator as custom_authenticator in config/packages/security.yaml",
+                    "   2. Set entry_point to Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator",
+                    " * <fg=blue>Read</> the documentation at <comment>vendor/suissetec/sso-auth-bundle/README.md</>"
                 ]
             },
             "files": {
@@ -32,13 +40,9 @@
                 "config/routes/suissetec_sso_auth.yaml": {
                     "contents": "c3Vpc3NldGVjX3Nzb19hdXRoOgogICAgcmVzb3VyY2U6ICdAU3Vpc3NldGVjU3NvQXV0aEJ1bmRsZS9jb25maWcvcm91dGVzLnlhbWwnCg==",
                     "executable": false
-                },
-                "post-install.txt": {
-                    "contents": "ICAqIENvbmZpZ3VyZSBJZFAgY3JlZGVudGlhbHMgZW52aXJvbm1lbnQgdmFyaWFibGVzLgoKICAqIENoZWNrIGJ1bmRsZSBjb25maWd1cmF0aW9ucyBhdCA8aW5mbz5wYWNrYWdlcy9zdWlzc2V0ZWMtc3NvLWF1dGgueWFtbDwvaW5mbz4KCiAgKiBDb25maWd1cmUgc3ltZm9ueSBzZWN1cml0eToKCiAgICAxLiBBZGQgU3Vpc3NldGVjXFxTc29BdXRoQnVuZGxlXFxBdXRoZW50aWNhdG9yXFxTc29BdXRoZW50aWNhdG9yIGFzIGN1c3RvbV9hdXRoZW50aWNhdG9yIGluIGNvbmZpZy9wYWNrYWdlcy9zZWN1cml0eS55YW1sCiAgICAyLiBTZXQgZW50cnlfcG9pbnQgdG8gU3Vpc3NldGVjXFxTc29BdXRoQnVuZGxlXFxBdXRoZW50aWNhdG9yXFxTc29BdXRoZW50aWNhdG9yCgogICogPGZnPWJsdWU+UmVhZDwvPiB0aGUgZG9jdW1lbnRhdGlvbiBhdCA8Y29tbWVudD52ZW5kb3Ivc3Vpc3NldGVjL3Nzby1hdXRoLWJ1bmRsZS9SRUFETUUubWQ8Lz4=",
-                    "executable": false
                 }
             },
-            "ref": "41e59a94ee9260f6912c7cc0df18b7c8f3da9576"
+            "ref": "8776e1c2c004f12cfe5e88518c0559157679952a"
         }
     }
 }

@@ -17,5 +17,13 @@
   "aliases": [
     "suissetec-sso-auth-bundle",
     "sso-auth"
+  ],
+  "post-install-output": [
+    " * Configure IdP credentials environment variables.",
+    " * Check bundle configurations at <info>packages/suissetec-sso-auth.yaml</info>",
+    " * Configure symfony security:",
+    "   1. Add Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator as custom_authenticator in config/packages/security.yaml",
+    "   2. Set entry_point to Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator",
+    " * <fg=blue>Read</> the documentation at <comment>vendor/suissetec/sso-auth-bundle/README.md</>"
   ]
 }
