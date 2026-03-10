@@ -29,8 +29,8 @@ suissetec_sso_auth:
         default_target_path: '/'
         failure_path: '/'
 
-        # Check for existing sso user session on public routes (f.e. /^\/(de|fr|it)$/)
-        # silent_login_routes:
+        # Check for existing sso user session on public paths (f.e. /^\/(de|fr|it)$/)
+        # silent_login_paths:
         #     - /^\/[a-z]{2}\/landingpage$/
 
     session_persistence:
