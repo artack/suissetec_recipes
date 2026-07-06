@@ -71,10 +71,13 @@ suissetec_sso_auth:
         # alerts: notifications rendered as alert strips below the header.
         # display_mode: alerts # enum: bell, alerts ; default: bell
 
-        # Polling interval in seconds for the client-side AJAX refresh. default: 60 (min: 5)
+        # Server-side cache TTL in seconds. Bounds how stale the server-rendered
+        # bell may be and how often interCMS is queried. default: 60 (min: 5)
         # poll_interval: 60
 
         # Endpoint paths (must be reachable by authenticated users).
+        # read_path: the mark-as-read endpoint used by the component.
+        # fetch_path: optional JSON endpoint for custom polling (unused by default).
         # fetch_path: '/sso/notifications'
         # read_path: '/sso/notifications/{id}/read'
 
