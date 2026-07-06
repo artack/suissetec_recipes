@@ -1,0 +1,111 @@
+suissetec_sso_auth:
+    sso_server:
+        url: '%env(SUISSETEC_SSO_URL)%'
+        app_id: '%env(SUISSETEC_SSO_APP_ID)%'
+        api_username: '%env(default::SUISSETEC_SSO_API_USERNAME)%'
+        api_password: '%env(default::SUISSETEC_SSO_API_PASSWORD)%'
+
+        # Alternative auth instead of username and password:
+        # api_bearer_token: '%env(default::SUISSETEC_SSO_API_BEARER_TOKEN)%'
+
+        # TTL of session refresh requests to the IdP for reducing the load on the IdP, defaults to 60 seconds
+        # session_refresh_ttl: 60
+
+        # Whether to send a logout request to IdP when a user logs out from this application. default: true
+        # logout_on_idp: false
+
+    authenticator:
+        login_path: '/sso/login'
+        check_path: '/sso/callback'
+        switch_member_path: '/sso/switch-member'
+
+        # Back channel logout path, called by IdP as f.e. /sso/logout?user_id=x&login_id=y
+        backchannel_logout_path: '/sso/logout'
+
+        # User update webhook, called by IdP as f.e. /sso/user-update?user_id=x&new_user_id=y&deleted=true
+        # Invalidates the local session for the given user_id (user changed / userId changed / deleted).
+        # user_update_path: '/sso/user-update'
+
+        # Shared static access token for IdP webhooks (backchannel logout AND user update).
+        # If not defined, the endpoints are public.
+        # If defined, the token must be added to query params like: /sso/logout?token=... / /sso/user-update?token=...
+        # backchannel_access_token: change-me-access-token
+
+        default_target_path: '/'
+        failure_path: '/'
+
+        # Check for existing sso user session on public paths (f.e. /^\/(de|fr|it)$/)
+        # silent_login_paths:
+        #     - /^\/[a-z]{2}\/landingpage$/
+
+    session_persistence:
+        # Whether to persist the session after a successful login. default: true
+        # enabled: false
+
+    roles:
+        # Define default roles appended for any logged-in user, can be empty
+        default:
+            - ROLE_USER
+
+        # Map interCMS userFunctions to symfony security roles
+        # function_mapping:
+        #     - appYourAppName: ROLE_USER
+        #     - appYourAppNameAdmin: ROLE_ADMIN
+
+    ui:
+        header:
+            # show_switch_member: true # default: false
+            # show_portal_badge: false # default: true
+            # show_login_badge: false # default: true
+            # portal_environment: prod # enum: test, prod ; default: test
+            application_titles:
+                de: NeueWebApp
+                fr: NouvelleApplicationWeb
+                it: NuovaApplicazioneWeb
+
+    notifications:
+        # App notifications from interCMS. Enabled by default; reuses the sso_server API credentials.
+        # enabled: false # default: true
+
+        # bell: notification bell with unread counter + dropdown (shown only when at least one exists).
+        # alerts: notifications rendered as alert strips below the header.
+        # display_mode: alerts # enum: bell, alerts ; default: bell
+
+        # Server-side cache TTL in seconds. Bounds how stale the server-rendered
+        # bell may be and how often interCMS is queried. default: 60 (min: 5)
+        # poll_interval: 60
+
+        # Endpoint paths (must be reachable by authenticated users).
+        # read_path: the mark-as-read endpoint used by the component.
+        # fetch_path: optional JSON endpoint for custom polling (unused by default).
+        # fetch_path: '/sso/notifications'
+        # read_path: '/sso/notifications/{id}/read'
+
+# Logging: dedicated 'suissetec_sso' Monolog channel, rotating monthly, 3 months retention.
+# Requires symfony/monolog-bundle. Remove or adjust to fit your application's logging strategy.
+monolog:
+    channels: ['suissetec_sso']
+
+when@dev:
+    monolog:
+        handlers:
+            suissetec_sso:
+                type: rotating_file
+                path: '%kernel.logs_dir%/suissetec_sso.log'
+                level: debug
+                channels: ['suissetec_sso']
+                max_files: 3
+                date_format: 'Y-m'
+                filename_format: '{filename}-{date}'
+
+when@prod:
+    monolog:
+        handlers:
+            suissetec_sso:
+                type: rotating_file
+                path: '%kernel.logs_dir%/suissetec_sso.log'
+                level: info
+                channels: ['suissetec_sso']
+                max_files: 3
+                date_format: 'Y-m'
+                filename_format: '{filename}-{date}'

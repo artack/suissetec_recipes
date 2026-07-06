@@ -1,0 +1,51 @@
+{
+    "manifests": {
+        "suissetec/sso-auth-bundle": {
+            "manifest": {
+                "bundles": {
+                    "Suissetec\\SsoAuthBundle\\SuissetecSsoAuthBundle": [
+                        "all"
+                    ]
+                },
+                "copy-from-recipe": {
+                    "config/": "%CONFIG_DIR%/"
+                },
+                "env": {
+                    "#1": "You can use either username and password (default), or API bearer token",
+                    "#2": "",
+                    "#3": "SUISSETEC_SSO_API_BEARER_TOKEN=\"change-me\"",
+                    "SUISSETEC_SSO_URL": "https://testapp.suissetec.ch",
+                    "SUISSETEC_SSO_APP_ID": "change-me",
+                    "SUISSETEC_SSO_API_USERNAME": "change-me",
+                    "SUISSETEC_SSO_API_PASSWORD": "change-me"
+                },
+                "aliases": [
+                    "suissetec-sso-auth-bundle",
+                    "sso-auth"
+                ],
+                "post-install-output": [
+                    " * Configure IdP credentials environment variables.",
+                    " * Check bundle configurations at <info>packages/suissetec-sso-auth.yaml</info>",
+                    " * Configure symfony security:",
+                    "   1. Add Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator as custom_authenticator in config/packages/security.yaml",
+                    "   2. Set entry_point to Suissetec\\SsoAuthBundle\\Authenticator\\SsoAuthenticator",
+                    " * SSO logs are written to <comment>var/log/suissetec_sso-YYYY-MM.log</comment> (monthly rotation, 3 months retention). Requires <info>symfony/monolog-bundle</info>.",
+                    " * IdP webhooks: <comment>/sso/logout</comment> (backchannel logout) and <comment>/sso/user-update</comment> (user changed/renamed/deleted). Both share <info>backchannel_access_token</info>.",
+                    " * App notifications (interCMS) are enabled by default. Configure under <info>notifications</info> in <info>packages/suissetec-sso-auth.yaml</info> (bell vs. alerts, polling, or disable). Reuses the SSO API credentials.",
+                    " * <fg=blue>Read</> the documentation at <comment>vendor/suissetec/sso-auth-bundle/README.md</>"
+                ]
+            },
+            "files": {
+                "config/packages/suissetec_sso_auth.yaml": {
+                    "contents": "c3Vpc3NldGVjX3Nzb19hdXRoOgogICAgc3NvX3NlcnZlcjoKICAgICAgICB1cmw6ICclZW52KFNVSVNTRVRFQ19TU09fVVJMKSUnCiAgICAgICAgYXBwX2lkOiAnJWVudihTVUlTU0VURUNfU1NPX0FQUF9JRCklJwogICAgICAgIGFwaV91c2VybmFtZTogJyVlbnYoZGVmYXVsdDo6U1VJU1NFVEVDX1NTT19BUElfVVNFUk5BTUUpJScKICAgICAgICBhcGlfcGFzc3dvcmQ6ICclZW52KGRlZmF1bHQ6OlNVSVNTRVRFQ19TU09fQVBJX1BBU1NXT1JEKSUnCgogICAgICAgICMgQWx0ZXJuYXRpdmUgYXV0aCBpbnN0ZWFkIG9mIHVzZXJuYW1lIGFuZCBwYXNzd29yZDoKICAgICAgICAjIGFwaV9iZWFyZXJfdG9rZW46ICclZW52KGRlZmF1bHQ6OlNVSVNTRVRFQ19TU09fQVBJX0JFQVJFUl9UT0tFTiklJwoKICAgICAgICAjIFRUTCBvZiBzZXNzaW9uIHJlZnJlc2ggcmVxdWVzdHMgdG8gdGhlIElkUCBmb3IgcmVkdWNpbmcgdGhlIGxvYWQgb24gdGhlIElkUCwgZGVmYXVsdHMgdG8gNjAgc2Vjb25kcwogICAgICAgICMgc2Vzc2lvbl9yZWZyZXNoX3R0bDogNjAKCiAgICAgICAgIyBXaGV0aGVyIHRvIHNlbmQgYSBsb2dvdXQgcmVxdWVzdCB0byBJZFAgd2hlbiBhIHVzZXIgbG9ncyBvdXQgZnJvbSB0aGlzIGFwcGxpY2F0aW9uLiBkZWZhdWx0OiB0cnVlCiAgICAgICAgIyBsb2dvdXRfb25faWRwOiBmYWxzZQoKICAgIGF1dGhlbnRpY2F0b3I6CiAgICAgICAgbG9naW5fcGF0aDogJy9zc28vbG9naW4nCiAgICAgICAgY2hlY2tfcGF0aDogJy9zc28vY2FsbGJhY2snCiAgICAgICAgc3dpdGNoX21lbWJlcl9wYXRoOiAnL3Nzby9zd2l0Y2gtbWVtYmVyJwoKICAgICAgICAjIEJhY2sgY2hhbm5lbCBsb2dvdXQgcGF0aCwgY2FsbGVkIGJ5IElkUCBhcyBmLmUuIC9zc28vbG9nb3V0P3VzZXJfaWQ9eCZsb2dpbl9pZD15CiAgICAgICAgYmFja2NoYW5uZWxfbG9nb3V0X3BhdGg6ICcvc3NvL2xvZ291dCcKCiAgICAgICAgIyBVc2VyIHVwZGF0ZSB3ZWJob29rLCBjYWxsZWQgYnkgSWRQIGFzIGYuZS4gL3Nzby91c2VyLXVwZGF0ZT91c2VyX2lkPXgmbmV3X3VzZXJfaWQ9eSZkZWxldGVkPXRydWUKICAgICAgICAjIEludmFsaWRhdGVzIHRoZSBsb2NhbCBzZXNzaW9uIGZvciB0aGUgZ2l2ZW4gdXNlcl9pZCAodXNlciBjaGFuZ2VkIC8gdXNlcklkIGNoYW5nZWQgLyBkZWxldGVkKS4KICAgICAgICAjIHVzZXJfdXBkYXRlX3BhdGg6ICcvc3NvL3VzZXItdXBkYXRlJwoKICAgICAgICAjIFNoYXJlZCBzdGF0aWMgYWNjZXNzIHRva2VuIGZvciBJZFAgd2ViaG9va3MgKGJhY2tjaGFubmVsIGxvZ291dCBBTkQgdXNlciB1cGRhdGUpLgogICAgICAgICMgSWYgbm90IGRlZmluZWQsIHRoZSBlbmRwb2ludHMgYXJlIHB1YmxpYy4KICAgICAgICAjIElmIGRlZmluZWQsIHRoZSB0b2tlbiBtdXN0IGJlIGFkZGVkIHRvIHF1ZXJ5IHBhcmFtcyBsaWtlOiAvc3NvL2xvZ291dD90b2tlbj0uLi4gLyAvc3NvL3VzZXItdXBkYXRlP3Rva2VuPS4uLgogICAgICAgICMgYmFja2NoYW5uZWxfYWNjZXNzX3Rva2VuOiBjaGFuZ2UtbWUtYWNjZXNzLXRva2VuCgogICAgICAgIGRlZmF1bHRfdGFyZ2V0X3BhdGg6ICcvJwogICAgICAgIGZhaWx1cmVfcGF0aDogJy8nCgogICAgICAgICMgQ2hlY2sgZm9yIGV4aXN0aW5nIHNzbyB1c2VyIHNlc3Npb24gb24gcHVibGljIHBhdGhzIChmLmUuIC9eXC8oZGV8ZnJ8aXQpJC8pCiAgICAgICAgIyBzaWxlbnRfbG9naW5fcGF0aHM6CiAgICAgICAgIyAgICAgLSAvXlwvW2Etel17Mn1cL2xhbmRpbmdwYWdlJC8KCiAgICBzZXNzaW9uX3BlcnNpc3RlbmNlOgogICAgICAgICMgV2hldGhlciB0byBwZXJzaXN0IHRoZSBzZXNzaW9uIGFmdGVyIGEgc3VjY2Vzc2Z1bCBsb2dpbi4gZGVmYXVsdDogdHJ1ZQogICAgICAgICMgZW5hYmxlZDogZmFsc2UKCiAgICByb2xlczoKICAgICAgICAjIERlZmluZSBkZWZhdWx0IHJvbGVzIGFwcGVuZGVkIGZvciBhbnkgbG9nZ2VkLWluIHVzZXIsIGNhbiBiZSBlbXB0eQogICAgICAgIGRlZmF1bHQ6CiAgICAgICAgICAgIC0gUk9MRV9VU0VSCgogICAgICAgICMgTWFwIGludGVyQ01TIHVzZXJGdW5jdGlvbnMgdG8gc3ltZm9ueSBzZWN1cml0eSByb2xlcwogICAgICAgICMgZnVuY3Rpb25fbWFwcGluZzoKICAgICAgICAjICAgICAtIGFwcFlvdXJBcHBOYW1lOiBST0xFX1VTRVIKICAgICAgICAjICAgICAtIGFwcFlvdXJBcHBOYW1lQWRtaW46IFJPTEVfQURNSU4KCiAgICB1aToKICAgICAgICBoZWFkZXI6CiAgICAgICAgICAgICMgc2hvd19zd2l0Y2hfbWVtYmVyOiB0cnVlICMgZGVmYXVsdDogZmFsc2UKICAgICAgICAgICAgIyBzaG93X3BvcnRhbF9iYWRnZTogZmFsc2UgIyBkZWZhdWx0OiB0cnVlCiAgICAgICAgICAgICMgc2hvd19sb2dpbl9iYWRnZTogZmFsc2UgIyBkZWZhdWx0OiB0cnVlCiAgICAgICAgICAgICMgcG9ydGFsX2Vudmlyb25tZW50OiBwcm9kICMgZW51bTogdGVzdCwgcHJvZCA7IGRlZmF1bHQ6IHRlc3QKICAgICAgICAgICAgYXBwbGljYXRpb25fdGl0bGVzOgogICAgICAgICAgICAgICAgZGU6IE5ldWVXZWJBcHAKICAgICAgICAgICAgICAgIGZyOiBOb3V2ZWxsZUFwcGxpY2F0aW9uV2ViCiAgICAgICAgICAgICAgICBpdDogTnVvdmFBcHBsaWNhemlvbmVXZWIKCiAgICBub3RpZmljYXRpb25zOgogICAgICAgICMgQXBwIG5vdGlmaWNhdGlvbnMgZnJvbSBpbnRlckNNUy4gRW5hYmxlZCBieSBkZWZhdWx0OyByZXVzZXMgdGhlIHNzb19zZXJ2ZXIgQVBJIGNyZWRlbnRpYWxzLgogICAgICAgICMgZW5hYmxlZDogZmFsc2UgIyBkZWZhdWx0OiB0cnVlCgogICAgICAgICMgYmVsbDogbm90aWZpY2F0aW9uIGJlbGwgd2l0aCB1bnJlYWQgY291bnRlciArIGRyb3Bkb3duIChzaG93biBvbmx5IHdoZW4gYXQgbGVhc3Qgb25lIGV4aXN0cykuCiAgICAgICAgIyBhbGVydHM6IG5vdGlmaWNhdGlvbnMgcmVuZGVyZWQgYXMgYWxlcnQgc3RyaXBzIGJlbG93IHRoZSBoZWFkZXIuCiAgICAgICAgIyBkaXNwbGF5X21vZGU6IGFsZXJ0cyAjIGVudW06IGJlbGwsIGFsZXJ0cyA7IGRlZmF1bHQ6IGJlbGwKCiAgICAgICAgIyBTZXJ2ZXItc2lkZSBjYWNoZSBUVEwgaW4gc2Vjb25kcy4gQm91bmRzIGhvdyBzdGFsZSB0aGUgc2VydmVyLXJlbmRlcmVkCiAgICAgICAgIyBiZWxsIG1heSBiZSBhbmQgaG93IG9mdGVuIGludGVyQ01TIGlzIHF1ZXJpZWQuIGRlZmF1bHQ6IDYwIChtaW46IDUpCiAgICAgICAgIyBwb2xsX2ludGVydmFsOiA2MAoKICAgICAgICAjIEVuZHBvaW50IHBhdGhzIChtdXN0IGJlIHJlYWNoYWJsZSBieSBhdXRoZW50aWNhdGVkIHVzZXJzKS4KICAgICAgICAjIHJlYWRfcGF0aDogdGhlIG1hcmstYXMtcmVhZCBlbmRwb2ludCB1c2VkIGJ5IHRoZSBjb21wb25lbnQuCiAgICAgICAgIyBmZXRjaF9wYXRoOiBvcHRpb25hbCBKU09OIGVuZHBvaW50IGZvciBjdXN0b20gcG9sbGluZyAodW51c2VkIGJ5IGRlZmF1bHQpLgogICAgICAgICMgZmV0Y2hfcGF0aDogJy9zc28vbm90aWZpY2F0aW9ucycKICAgICAgICAjIHJlYWRfcGF0aDogJy9zc28vbm90aWZpY2F0aW9ucy97aWR9L3JlYWQnCgojIExvZ2dpbmc6IGRlZGljYXRlZCAnc3Vpc3NldGVjX3NzbycgTW9ub2xvZyBjaGFubmVsLCByb3RhdGluZyBtb250aGx5LCAzIG1vbnRocyByZXRlbnRpb24uCiMgUmVxdWlyZXMgc3ltZm9ueS9tb25vbG9nLWJ1bmRsZS4gUmVtb3ZlIG9yIGFkanVzdCB0byBmaXQgeW91ciBhcHBsaWNhdGlvbidzIGxvZ2dpbmcgc3RyYXRlZ3kuCm1vbm9sb2c6CiAgICBjaGFubmVsczogWydzdWlzc2V0ZWNfc3NvJ10KCndoZW5AZGV2OgogICAgbW9ub2xvZzoKICAgICAgICBoYW5kbGVyczoKICAgICAgICAgICAgc3Vpc3NldGVjX3NzbzoKICAgICAgICAgICAgICAgIHR5cGU6IHJvdGF0aW5nX2ZpbGUKICAgICAgICAgICAgICAgIHBhdGg6ICcla2VybmVsLmxvZ3NfZGlyJS9zdWlzc2V0ZWNfc3NvLmxvZycKICAgICAgICAgICAgICAgIGxldmVsOiBkZWJ1ZwogICAgICAgICAgICAgICAgY2hhbm5lbHM6IFsnc3Vpc3NldGVjX3NzbyddCiAgICAgICAgICAgICAgICBtYXhfZmlsZXM6IDMKICAgICAgICAgICAgICAgIGRhdGVfZm9ybWF0OiAnWS1tJwogICAgICAgICAgICAgICAgZmlsZW5hbWVfZm9ybWF0OiAne2ZpbGVuYW1lfS17ZGF0ZX0nCgp3aGVuQHByb2Q6CiAgICBtb25vbG9nOgogICAgICAgIGhhbmRsZXJzOgogICAgICAgICAgICBzdWlzc2V0ZWNfc3NvOgogICAgICAgICAgICAgICAgdHlwZTogcm90YXRpbmdfZmlsZQogICAgICAgICAgICAgICAgcGF0aDogJyVrZXJuZWwubG9nc19kaXIlL3N1aXNzZXRlY19zc28ubG9nJwogICAgICAgICAgICAgICAgbGV2ZWw6IGluZm8KICAgICAgICAgICAgICAgIGNoYW5uZWxzOiBbJ3N1aXNzZXRlY19zc28nXQogICAgICAgICAgICAgICAgbWF4X2ZpbGVzOiAzCiAgICAgICAgICAgICAgICBkYXRlX2Zvcm1hdDogJ1ktbScKICAgICAgICAgICAgICAgIGZpbGVuYW1lX2Zvcm1hdDogJ3tmaWxlbmFtZX0te2RhdGV9Jwo=",
+                    "executable": false
+                },
+                "config/routes/suissetec_sso_auth.yaml": {
+                    "contents": "c3Vpc3NldGVjX3Nzb19hdXRoOgogICAgcmVzb3VyY2U6ICdAU3Vpc3NldGVjU3NvQXV0aEJ1bmRsZS9jb25maWcvcm91dGVzLnlhbWwnCg==",
+                    "executable": false
+                }
+            },
+            "ref": "d35988136fdcb93f82662bff298b6c4235108354"
+        }
+    }
+}
