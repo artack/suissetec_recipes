@@ -45,6 +45,7 @@ Example:
 {
   "extra": {
     "symfony": {
+      "allow-contrib": true,
       "endpoint": [
         "https://api.github.com/repos/artack/suissetec_recipes/contents/index.json?ref=main",
         "flex://defaults"
@@ -53,6 +54,13 @@ Example:
   }
 }
 ```
+
+`allow-contrib` belongs in that block for **every** recipe served here: `index.json` sets
+`is_contrib: true`, so without the flag Flex applies none of them - `- IGNORING <package>`
+non-interactively, a prompt defaulting to no when interactive. The package installs, the
+recipe does not, and the application only notices when the missing configuration stops it
+from booting. Catch up with `composer recipes:install <vendor/package> --force -v`;
+`SYMFONY_ALLOW_CONTRIB=1` is the environment equivalent.
 
 ## Important Technical Constraints
 - Compiled file payloads in `build/*.json` must be Base64 (`files.*.contents`).

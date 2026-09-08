@@ -12,6 +12,7 @@ Use this endpoint in consumer `composer.json`:
 {
   "extra": {
     "symfony": {
+      "allow-contrib": true,
       "endpoint": [
         "https://api.github.com/repos/artack/suissetec_recipes/contents/index.json?ref=main",
         "flex://defaults"
@@ -20,6 +21,31 @@ Use this endpoint in consumer `composer.json`:
   }
 }
 ```
+
+### `allow-contrib` is not optional here
+
+Every recipe in this repository is served as a **contrib** recipe (`index.json` sets
+`is_contrib: true`). Without `allow-contrib`, Flex does not apply any of them:
+
+- non-interactively (CI, `composer --no-interaction`) it prints
+  `- IGNORING <package> (<recipe url>)` and **installs no recipe at all**;
+- interactively it prints `WARNING` and asks - and the answer **defaults to no**, so a
+  plain Enter skips the recipe too.
+
+Either way the package installs and the recipe does not, with nothing missing at that
+moment. The application notices later, when the configuration the recipe was supposed to
+write is absent and it fails to boot - typically far away from the `composer require` that
+caused it.
+
+To catch up in a project where recipes were skipped:
+
+```bash
+composer recipes:install <vendor/package> --force -v
+```
+
+Flex keeps such a package in `symfony.lock` without recipe information, so this works
+after the fact. `SYMFONY_ALLOW_CONTRIB=1` in the environment does the same job as the
+`composer.json` flag - useful in CI images.
 
 ## Source layout
 
