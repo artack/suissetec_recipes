@@ -1,0 +1,166 @@
+suissetec_mcp_auth:
+    # The audience this resource server accepts — the resource identifier of THIS
+    # application, and nothing else. Accepting any audience is refused by the
+    # configuration: it is the MUST of the MCP specification.
+    # Either this or audience_resolver_service must be set.
+    audience: '%env(SUISSETEC_MCP_AUDIENCE)%'
+
+    # Service id of an AudienceResolverInterface, for a server whose accepted audience
+    # is not a fixed list (e.g. the client id of every registered MCP client).
+    # audience_resolver_service: 'App\Security\MyAudienceResolver'
+
+    # Expected "iss", compared verbatim — a trailing slash is a different issuer.
+    # LEFT UNSET ON PURPOSE: the tokens of the issuing authorization server carry no
+    # "iss" claim at all (league/oauth2-server refuses to set registered claims).
+    # Configuring an issuer makes "iss" MANDATORY on its own — with an issuer that
+    # does not send the claim, every real token is then refused with "missing_claims".
+    # Unset means the claim is NOT judged. Say that on purpose, not by forgetting.
+    # issuer: '%env(SUISSETEC_MCP_ISSUER)%'
+
+    keys:
+        # 'jwks' fetches and caches the issuer's key set (default).
+        # 'local' reads keys from disk or configuration — needed only by an
+        # application that issues the tokens it verifies.
+        # source: local
+        jwks_uri: '%env(SUISSETEC_MCP_JWKS_URI)%'
+
+        # Cache lifetime of the fetched key set in seconds. Keeps the network off
+        # the critical path. default: 3600
+        # jwks_ttl: 3600
+
+        # Shortest gap between two unscheduled key-set reloads. Without it, forged
+        # tokens turn into a request flood against the issuer. default: 30
+        # min_refresh_interval: 30
+
+        # Reload the key set at once when no known key verifies a token — this is
+        # what makes a key rotation survivable while the issuer sets no "kid".
+        # default: true
+        # refresh_on_unknown_key: false
+
+        # http_timeout: 5.0
+        # cache_service: 'cache.app'
+        # http_client_service: null
+
+        # Only read when source is 'local':
+        # local:
+        #     keys: []        # a path OR the PEM itself — told apart by "-----BEGIN"
+        #     paths: []       # PEM public keys or certificates
+        #     pem: []         # inline PEM, e.g. from an env var
+        #     jwks_paths: []  # local JWKS documents
+
+    roles:
+        # Roles appended for any caller with a valid token, can be empty.
+        # Today's tokens carry no userFunctions yet, so function_mapping maps
+        # nothing — grant what an authenticated caller needs here and gate real
+        # permissions in the tool itself.
+        default:
+            - ROLE_USER
+
+        # Map interCMS userFunctions to symfony security roles — same form as
+        # suissetec/sso-auth-bundle.
+        # function_mapping:
+        #     appYourAppNameAdmin: ROLE_ADMIN
+
+        # functions_claim: userFunctions
+
+        # When set, every scope also becomes a role, e.g. 'ROLE_SCOPE_' turns
+        # mcp:yourapp into ROLE_SCOPE_MCP_YOURAPP. default: null
+        # scope_role_prefix: 'ROLE_SCOPE_'
+
+    scopes:
+        # Name of the scope claim. It is 'scopes' and holds an ARRAY — not the
+        # RFC 6749 'scope' string. Reading the wrong one silently yields no scopes.
+        # claim: scopes
+
+        # Scopes every token must carry. A token without them gets 403, not 401.
+        # required: ['mcp:yourapp']
+
+        # Scopes advertised in WWW-Authenticate, so a client that receives a 401
+        # knows what to ask for. Defaults to scopes.required; set it explicitly only
+        # where this server names a scope it does not itself enforce in the token.
+        # challenge: ['mcp:yourapp']
+
+    # RFC 9728 protected-resource metadata URL, added to WWW-Authenticate so an MCP
+    # client can find where to authenticate instead of just failing. Points at the
+    # authorization server's document for THIS resource.
+    # resource_metadata_url: '%env(SUISSETEC_MCP_RESOURCE_METADATA_URL)%'
+
+    # Realm announced in the WWW-Authenticate header. default: mcp
+    # realm: mcp
+
+    # Tolerance in seconds for exp/nbf/iat. Minute-scale token lifetimes do not
+    # forgive a skewed clock. default: 30
+    # clock_skew: 30
+
+    # Signature algorithms accepted. NEVER add a symmetric algorithm here — that is
+    # the key-confusion attack, and the configuration refuses "none" and the HS*
+    # family outright. default: ['RS256']
+    # allowed_algorithms: ['RS256']
+
+    # Claims that must be present and non-empty. 'iss' is added automatically when
+    # an issuer is configured. default: ['sub', 'aud', 'exp']
+    # required_claims: ['sub', 'aud', 'exp']
+
+    claim_schema:
+        # version_claim: ver
+
+        # Claim-schema versions this application understands. Empty (the default)
+        # accepts any shape — including a future one, whose new or renamed claims
+        # this application reads as absent; for userFunctions that looks like a
+        # permission problem and is a schema problem. Declaring the versions turns
+        # it into an honest refusal at the door — and into a refusal on the day the
+        # issuer bumps the version, so revisit it then instead of being surprised.
+        # supported_versions: [1]
+
+    user:
+        # identifier_claim: sub
+
+        # Service id of a UserResolverInterface. Set it where the subject must become
+        # this application's own user entity — checking that the subject exists
+        # locally is application work; the bundle builds the user from the claims and
+        # asks nobody. AccessTokenUser is not final, so extend rather than reimplement.
+        # resolver_service: 'App\Security\MyUserResolver'
+
+    revocation:
+        # Service id of a RevocationCheckerInterface, consulted on EVERY request.
+        # Keep it cheap. Needed wherever a token must be withdrawable before it
+        # expires (e.g. around an access-token repository's revocation check).
+        # checker_service: 'App\Security\MyRevocationChecker'
+
+        # Service id of a FreshAuthorizationCheckerInterface, consulted only for the
+        # FRESH_ACCESS_TOKEN attribute — the re-check before a write.
+        # fresh_authorization_checker_service: 'App\Security\MyFreshAuthorizationChecker'
+
+        # Seconds since "iat" beyond which FRESH_ACCESS_TOKEN is refused, regardless
+        # of exp. default: null
+        # max_token_age: 300
+
+# Logging: dedicated 'suissetec_mcp_auth' Monolog channel, rotating monthly, 3 months
+# retention. Requires symfony/monolog-bundle. Remove or adjust to fit your
+# application's logging strategy.
+monolog:
+    channels: ['suissetec_mcp_auth']
+
+when@dev:
+    monolog:
+        handlers:
+            suissetec_mcp_auth:
+                type: rotating_file
+                path: '%kernel.logs_dir%/suissetec_mcp_auth.log'
+                level: debug
+                channels: ['suissetec_mcp_auth']
+                max_files: 3
+                date_format: 'Y-m'
+                filename_format: '{filename}-{date}'
+
+when@prod:
+    monolog:
+        handlers:
+            suissetec_mcp_auth:
+                type: rotating_file
+                path: '%kernel.logs_dir%/suissetec_mcp_auth.log'
+                level: info
+                channels: ['suissetec_mcp_auth']
+                max_files: 3
+                date_format: 'Y-m'
+                filename_format: '{filename}-{date}'

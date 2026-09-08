@@ -1,6 +1,8 @@
 {
     "aliases": {
+        "mcp-auth": "suissetec/mcp-auth-bundle",
         "sso-auth": "suissetec/sso-auth-bundle",
+        "suissetec-mcp-auth-bundle": "suissetec/mcp-auth-bundle",
         "suissetec-sso-auth-bundle": "suissetec/sso-auth-bundle"
     }
 }

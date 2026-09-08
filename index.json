@@ -1,5 +1,8 @@
 {
     "recipes": {
+        "suissetec/mcp-auth-bundle": [
+            "0.1"
+        ],
         "suissetec/sso-auth-bundle": [
             "1.0",
             "1.2",

@@ -1,0 +1,48 @@
+{
+  "bundles": {
+    "Suissetec\\McpAuthBundle\\SuissetecMcpAuthBundle": ["all"]
+  },
+  "copy-from-recipe": {
+    "config/": "%CONFIG_DIR%/"
+  },
+  "env": {
+    "#1": "Resource identifier of THIS application - the \"aud\" the authorization server mints its tokens for.",
+    "SUISSETEC_MCP_AUDIENCE": "change-me",
+    "#2": "Key set of the issuing authorization server, used to verify the token signature.",
+    "SUISSETEC_MCP_JWKS_URI": "https://testportal.suissetec.ch/.well-known/jwks.json",
+    "#3": "",
+    "#4": "Optional. Only set these when the matching option is enabled in packages/suissetec_mcp_auth.yaml:",
+    "#5": "SUISSETEC_MCP_ISSUER=\"https://testportal.suissetec.ch\"",
+    "#6": "SUISSETEC_MCP_RESOURCE_METADATA_URL=\"https://testportal.suissetec.ch/.well-known/oauth-protected-resource/mcp\""
+  },
+  "aliases": [
+    "suissetec-mcp-auth-bundle",
+    "mcp-auth"
+  ],
+  "post-install-output": [
+    " * Set <info>SUISSETEC_MCP_AUDIENCE</info> (this application's resource identifier) and <info>SUISSETEC_MCP_JWKS_URI</info> (the issuer's key set).",
+    " * Check bundle configuration at <info>packages/suissetec_mcp_auth.yaml</info>",
+    " * This bundle brings <comment>no firewall of its own</comment> - add a stateless one in <info>config/packages/security.yaml</info>:",
+    "",
+    "     security:",
+    "         firewalls:",
+    "             mcp:",
+    "                 pattern: ^/mcp",
+    "                 stateless: true",
+    "                 custom_authenticators:",
+    "                     - suissetec_mcp_auth.authenticator",
+    "                 entry_point: suissetec_mcp_auth.authenticator",
+    "                 access_denied_handler: suissetec_mcp_auth.access_denied_handler",
+    "",
+    "         access_control:",
+    "             - { path: ^/mcp, roles: IS_AUTHENTICATED_FULLY }",
+    "",
+    " * <fg=red>Firewall order matters.</> Symfony uses the FIRST firewall whose pattern matches. In <comment>Sylius</comment> the mcp firewall must sit <comment>ABOVE</comment> the admin and shop firewalls - their regexes (<info>%sylius.security.admin_regex%</info> / <info>%sylius.security.shop_regex%</info>) are broad enough to swallow <info>/mcp</info>, and then the path is never reachable.",
+    " * <comment>issuer</comment> is intentionally left unset in the shipped configuration: today's tokens carry no <info>iss</info> claim, and configuring an issuer makes that claim mandatory - every real token would be refused. Enable it only against an issuer that sets it.",
+    " * Add the key-set warm-up to your deployment, after the cache clear, so the first request after a release does not pay for the fetch: <info>bin/console suissetec:mcp-auth:warm-jwks</info>",
+    " * Inherit the shipped contract test (<info>Suissetec\\McpAuthBundle\\Test\\McpAuthContractTestCase</info>) in <comment>tests/</comment> and feed it this application's own configuration values - it runs the whole token-verification contract against your setup.",
+    " * Enforce permissions where the tool runs (<info>#[IsGranted]</info>). Hiding a tool from a listing is comfort, not access control.",
+    " * MCP logs are written to <comment>var/log/suissetec_mcp_auth-YYYY-MM.log</comment> (monthly rotation, 3 months retention). Requires <info>symfony/monolog-bundle</info>.",
+    " * <fg=blue>Read</> the documentation at <comment>vendor/suissetec/mcp-auth-bundle/README.md</>"
+  ]
+}
