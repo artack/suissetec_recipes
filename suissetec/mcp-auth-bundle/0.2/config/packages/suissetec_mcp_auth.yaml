@@ -1,0 +1,179 @@
+suissetec_mcp_auth:
+    # Expected "iss", compared verbatim — a trailing slash is a different issuer.
+    # Claim-schema-3 tokens carry "iss": the hub stamps its own base URL. Configured,
+    # the claim becomes MANDATORY on its own — a token without it is refused with
+    # "missing_claims". Removing this line means the claim is NOT judged; say that
+    # on purpose, not by forgetting.
+    issuer: '%env(SUISSETEC_MCP_ISSUER)%'
+
+    # The audience this resource server accepts — the URL of THIS application's MCP
+    # endpoint, byte for byte what the hub puts in "aud", and nothing else. The token
+    # carries several audiences (the portal, every switched-on application, the
+    # agent's client id); it is accepted when one of them is this one. Accepting any
+    # audience is refused by the configuration: it is the MUST of the MCP specification.
+    # Either this or audience_resolver_service must be set.
+    audience: '%env(SUISSETEC_MCP_AUDIENCE)%'
+
+    # Service id of an AudienceResolverInterface, for a server whose accepted audience
+    # is not a fixed list (e.g. the client id of every registered MCP client).
+    # audience_resolver_service: 'App\Security\MyAudienceResolver'
+
+    keys:
+        # 'jwks' fetches and caches the issuer's key set (default).
+        # 'local' reads keys from disk or configuration — needed only by an
+        # application that issues the tokens it verifies.
+        # source: local
+        jwks_uri: '%env(SUISSETEC_MCP_JWKS_URI)%'
+
+        # Cache lifetime of the fetched key set in seconds. Keeps the network off
+        # the critical path. default: 3600
+        # jwks_ttl: 3600
+
+        # Shortest gap between two unscheduled key-set reloads. Without it, forged
+        # tokens turn into a request flood against the issuer. default: 30
+        # min_refresh_interval: 30
+
+        # Reload the key set at once when no known key verifies a token — this is
+        # what makes a key rotation survivable while the issuer sets no "kid".
+        # default: true
+        # refresh_on_unknown_key: false
+
+        # http_timeout: 5.0
+        # cache_service: 'cache.app'
+        # http_client_service: null
+
+        # Only read when source is 'local':
+        # local:
+        #     keys: []        # a path OR the PEM itself — told apart by "-----BEGIN"
+        #     paths: []       # PEM public keys or certificates
+        #     pem: []         # inline PEM, e.g. from an env var
+        #     jwks_paths: []  # local JWKS documents
+
+    claim_schema:
+        # version_claim: ver
+
+        # Claim-schema versions accepted: a non-empty subset of what the bundle can
+        # read, which is [3]. Anything else — [], [2] — is refused at boot; there is
+        # no "accept any" and no compatibility with schema 2. The default; stated so
+        # it is visible.
+        supported_versions: [3]
+
+    roles:
+        # Roles appended for any PERSON with a valid token, can be empty. The hub's
+        # discovery token gets none of these — it carries exactly ROLE_MCP_DISCOVERY.
+        default:
+            - ROLE_USER
+
+        # The boundary: map the raw interCMS functions the token carries in
+        # "entitlements" to symfony security roles — same form as
+        # suissetec/sso-auth-bundle. Compared verbatim, no inheritance.
+        # function_mapping:
+        #     mcpYourAppAdmin: ROLE_MCP_YOURAPP_ADMIN
+
+        # Claim carrying the raw functions. Schema 3 names it "entitlements"; the
+        # schema-2 name "userFunctions" is gone. default: entitlements
+        # functions_claim: entitlements
+
+        # When set, every scope also becomes a role, e.g. 'ROLE_SCOPE_' turns
+        # mcp:read into ROLE_SCOPE_MCP_READ. default: null
+        # scope_role_prefix: 'ROLE_SCOPE_'
+
+    scopes:
+        # Name of the scope claim. It is 'scopes' and holds an ARRAY — not the
+        # RFC 6749 'scope' string. Reading the wrong one silently yields no scopes.
+        # claim: scopes
+
+        # Scopes every token must carry. A token without them gets 403, not 401.
+        # Leave it empty in an application: there is no door scope per application
+        # (no mcp:yourapp) — the door is "aud", and who may use the application is
+        # decided by its mcp* function. The scopes carry the person's access level
+        # (mcp:read / mcp:write / mcp:delete), a trust setting of the person.
+        # required: []
+
+        # Scopes advertised in WWW-Authenticate, so a client that receives a 401
+        # knows what to ask for. Defaults to scopes.required.
+        # challenge: []
+
+    # RFC 9728 protected-resource metadata URL, added to WWW-Authenticate so an MCP
+    # client can find where to authenticate instead of just failing. Points at the
+    # authorization server's document for THIS resource.
+    # resource_metadata_url: '%env(SUISSETEC_MCP_RESOURCE_METADATA_URL)%'
+
+    # Realm announced in the WWW-Authenticate header. default: mcp
+    # realm: mcp
+
+    # Tolerance in seconds for exp/nbf/iat, at most 300. Minute-scale token
+    # lifetimes do not forgive a skewed clock. default: 30
+    # clock_skew: 30
+
+    # Signature algorithms accepted. NEVER add a symmetric algorithm here — that is
+    # the key-confusion attack, and the configuration refuses "none" and the HS*
+    # family outright. default: ['RS256']
+    # allowed_algorithms: ['RS256']
+
+    # Claims that must be present and non-empty. Defaults to the RFC 9068 set; "iss"
+    # is added automatically because an issuer is configured above. "exp" cannot be
+    # removed. A token without client_id is refused with "missing_claims".
+    # default: ['sub', 'aud', 'exp', 'iat', 'jti', 'client_id']
+    # required_claims: ['sub', 'aud', 'exp', 'iat', 'jti', 'client_id']
+
+    # Nothing to configure for the hub's discovery token (sub = client_id =
+    # agent-hub, purpose = discovery): the bundle recognises it, lets it call only
+    # server/discover and tools/list, and answers everything else with 403.
+
+    user:
+        # identifier_claim: sub
+
+        # Service id of a UserResolverInterface. Set it where the subject must become
+        # this application's own user entity — checking that the subject exists
+        # locally is application work; the bundle builds the user from the claims and
+        # asks nobody. AccessTokenUser is not final, so extend rather than reimplement.
+        # The resolver is not called for the discovery token.
+        # resolver_service: 'App\Security\MyUserResolver'
+
+    revocation:
+        # Service id of a RevocationCheckerInterface, consulted on EVERY request.
+        # Keep it cheap. Needed wherever a token must be withdrawable before it
+        # expires (e.g. around an access-token repository's revocation check).
+        # checker_service: 'App\Security\MyRevocationChecker'
+
+        # Service id of a FreshAuthorizationCheckerInterface, consulted only for the
+        # FRESH_ACCESS_TOKEN attribute — the re-check before a write. It can ask the
+        # source of truth; prefer it over max_token_age for anything that writes.
+        # fresh_authorization_checker_service: 'App\Security\MyFreshAuthorizationChecker'
+
+        # Seconds since "iat" beyond which FRESH_ACCESS_TOKEN is refused, regardless
+        # of exp. It measures the age of the TOKEN, not the presence of a human: the
+        # hub renews every 15 minutes. Only for tokens that do NOT auto-renew.
+        # default: null
+        # max_token_age: 300
+
+# Logging: dedicated 'suissetec_mcp_auth' Monolog channel, rotating monthly, 3 months
+# retention. Requires symfony/monolog-bundle. Remove or adjust to fit your
+# application's logging strategy.
+monolog:
+    channels: ['suissetec_mcp_auth']
+
+when@dev:
+    monolog:
+        handlers:
+            suissetec_mcp_auth:
+                type: rotating_file
+                path: '%kernel.logs_dir%/suissetec_mcp_auth.log'
+                level: debug
+                channels: ['suissetec_mcp_auth']
+                max_files: 3
+                date_format: 'Y-m'
+                filename_format: '{filename}-{date}'
+
+when@prod:
+    monolog:
+        handlers:
+            suissetec_mcp_auth:
+                type: rotating_file
+                path: '%kernel.logs_dir%/suissetec_mcp_auth.log'
+                level: info
+                channels: ['suissetec_mcp_auth']
+                max_files: 3
+                date_format: 'Y-m'
+                filename_format: '{filename}-{date}'
