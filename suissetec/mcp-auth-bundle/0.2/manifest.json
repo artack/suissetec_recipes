@@ -1,0 +1,54 @@
+{
+  "bundles": {
+    "Suissetec\\McpAuthBundle\\SuissetecMcpAuthBundle": ["all"]
+  },
+  "copy-from-recipe": {
+    "config/": "%CONFIG_DIR%/"
+  },
+  "env": {
+    "#1": "URL of THIS application's MCP endpoint, e.g. https://testshop.suissetec.ch/mcp - byte for byte what the hub puts in \"aud\".",
+    "SUISSETEC_MCP_AUDIENCE": "change-me",
+    "#2": "Key set of the hub (the issuing authorization server), used to verify the token signature.",
+    "SUISSETEC_MCP_JWKS_URI": "https://testportal.suissetec.ch/.well-known/jwks.json",
+    "#3": "Base URL of the hub, compared verbatim with the \"iss\" claim - no trailing slash.",
+    "SUISSETEC_MCP_ISSUER": "https://testportal.suissetec.ch",
+    "#4": "",
+    "#5": "Optional. Only set this when resource_metadata_url is enabled in packages/suissetec_mcp_auth.yaml:",
+    "#6": "SUISSETEC_MCP_RESOURCE_METADATA_URL=\"https://testportal.suissetec.ch/.well-known/oauth-protected-resource/mcp\""
+  },
+  "aliases": [
+    "suissetec-mcp-auth-bundle",
+    "mcp-auth"
+  ],
+  "post-install-output": [
+    " * Set <info>SUISSETEC_MCP_AUDIENCE</info> (this application's /mcp URL), <info>SUISSETEC_MCP_JWKS_URI</info> (the hub's key set) and <info>SUISSETEC_MCP_ISSUER</info> (the hub's base URL).",
+    " * Check bundle configuration at <info>packages/suissetec_mcp_auth.yaml</info> - claim schema 3: rights arrive as <comment>entitlements</comment>, mapped with <info>roles.function_mapping</info>.",
+    " * Nothing to configure for the hub's <comment>discovery token</comment> - the bundle recognises it and lets it list tools only.",
+    " * This bundle brings <comment>no firewall of its own</comment> - add a stateless one in <info>config/packages/security.yaml</info>:",
+    "",
+    "     security:",
+    "         providers:",
+    "             mcp_unused_provider:",
+    "                 memory: ~",
+    "         firewalls:",
+    "             mcp:",
+    "                 pattern: ^/mcp",
+    "                 stateless: true",
+    "                 provider: mcp_unused_provider",
+    "                 custom_authenticators:",
+    "                     - suissetec_mcp_auth.authenticator",
+    "                 entry_point: suissetec_mcp_auth.authenticator",
+    "                 access_denied_handler: suissetec_mcp_auth.access_denied_handler",
+    "",
+    "         access_control:",
+    "             - { path: ^/mcp, roles: IS_AUTHENTICATED_FULLY }",
+    "",
+    " * Guard <info>^/mcp</info> with <comment>IS_AUTHENTICATED_FULLY, not with a role</comment> - the hub's discovery request carries only ROLE_MCP_DISCOVERY, a role there locks the hub out of listing your tools. Put the boundary on each tool (<info>#[IsGranted]</info>).",
+    " * The empty provider is needed as soon as the application has more than one provider (Sylius, the portal). Do not replace it with a real one.",
+    " * <fg=red>Firewall order matters.</> Symfony uses the FIRST firewall whose pattern matches. In <comment>Sylius</comment> the mcp firewall must sit <comment>ABOVE</comment> the admin and shop firewalls - their regexes (<info>%sylius.security.admin_regex%</info> / <info>%sylius.security.shop_regex%</info>) are broad enough to swallow <info>/mcp</info>, and then the path is never reachable.",
+    " * Add the key-set warm-up to your deployment, after the cache clear, so the first request after a release does not pay for the fetch: <info>bin/console suissetec:mcp-auth:warm-jwks</info>",
+    " * Inherit the shipped contract test (<info>Suissetec\\McpAuthBundle\\Test\\McpAuthContractTestCase</info>) in <comment>tests/</comment> and feed it this application's own configuration values - it runs the whole token-verification contract against your setup.",
+    " * MCP logs are written to <comment>var/log/suissetec_mcp_auth-YYYY-MM.log</comment> (monthly rotation, 3 months retention). Requires <info>symfony/monolog-bundle</info>.",
+    " * <fg=blue>Read</> the documentation at <comment>vendor/suissetec/mcp-auth-bundle/README.md</>"
+  ]
+}
